@@ -29,7 +29,9 @@
 ;;                                                                              
 ;;;			       General options					
 ;; _____________________________________________________________________________
-;;                                                                              
+;;
+(require 'cl-lib)
+
 (defgroup speck nil
   "Another interface to Aspell, Hunspell and Ispell."
   :version "23.1"
@@ -1786,33 +1788,30 @@ MAP must be a keymap, KEYS a list of (command . key) pairs."
 ;;;			       Macros						
 ;; _____________________________________________________________________________
 ;; 										
-(eval-when-compile
-  (require 'cl)
+(defmacro with-buffer-unmodified (&rest body)
+  "Eval BODY, preserving the current buffer's modified state."
+  (declare (debug t))
+  (let ((modified (make-symbol "modified")))
+    `(let ((,modified (buffer-modified-p)))
+       (unwind-protect
+           (progn ,@body)
+         (unless ,modified
+           (restore-buffer-modified-p nil))))))
 
-  (defmacro with-buffer-unmodified (&rest body)
-    "Eval BODY, preserving the current buffer's modified state."
-    (declare (debug t))
-    (let ((modified (make-symbol "modified")))
-      `(let ((,modified (buffer-modified-p)))
-	 (unwind-protect
-	     (progn ,@body)
-	   (unless ,modified
-	     (restore-buffer-modified-p nil))))))
-
-  ;; Save match-data maybe .............
-  (defmacro with-buffer-prepared-for-specking (&rest body)
-    "Execute BODY in current buffer, overriding several variables.
+;; Save match-data maybe .............
+(defmacro with-buffer-prepared-for-specking (&rest body)
+  "Execute BODY in current buffer, overriding several variables.
 Preserves the `buffer-modified-p' state of the current buffer."
-    (declare (debug t))
-    `(with-buffer-unmodified
-      (let ((buffer-undo-list t)
-	    (inhibit-read-only t)
-	    (inhibit-point-motion-hooks t)
-	    (inhibit-modification-hooks t)
-	    (inhibit-field-text-motion t)
-	    first-change-hook after-change-functions
-	    deactivate-mark buffer-file-name buffer-file-truename)
-	,@body))))
+  (declare (debug t))
+  `(with-buffer-unmodified
+    (let ((buffer-undo-list t)
+          (inhibit-read-only t)
+          (inhibit-point-motion-hooks t)
+          (inhibit-modification-hooks t)
+          (inhibit-field-text-motion t)
+          first-change-hook after-change-functions
+          deactivate-mark buffer-file-name buffer-file-truename)
+      ,@body)))
 
 ;; _____________________________________________________________________________
 ;; 										
