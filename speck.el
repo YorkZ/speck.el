@@ -31,6 +31,10 @@
 ;; of all windows showing the current buffer.
 
 ;; Change Log:
+;; 2014/04/16 York Zhao
+;;     Fix whitespace, replace TABs with spaces.
+;; 2013/12/30 York Zhao
+;;     Require the `cl-lib', instead of `cl'
 ;; 2013/05/19 Andrei Chițu
 ;;     bugfix: bugfix: in `speck-windows' check that `window' is non-nil before specking it
 ;;     bugfix: keep case of dictionary names in `speck-hunspell-dictionary-alist'
