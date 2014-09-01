@@ -5,7 +5,7 @@
 ;; Time-stamp: "2014-08-30 15:30:34 york"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
-;; Version: 2013.05.19
+;; Version: 2014.08.30
 
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
@@ -2901,9 +2901,9 @@ by `speck-pause-timer'."
 	  ;; its buffer current.
 	  (when (and speck-process (not (process-get speck-process 'preempted)))
 	    (with-buffer-prepared-for-specking
-		(let (minibuffer-auto-raise message-log-max)
-		  (save-excursion
-		    (speck-window))))))))))
+             (let (minibuffer-auto-raise message-log-max)
+               (save-excursion
+                 (speck-window))))))))))
   (when speck-window-list
     ;; Pause by `speck-pause' seconds.
     (speck-respeck speck-pause)))
