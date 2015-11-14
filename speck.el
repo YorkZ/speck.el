@@ -32,6 +32,9 @@
 ;; of all windows showing the current buffer.
 
 ;; Change Log:
+;;
+;; 2015/11/13 York Zhao
+;;     Add support for using extra dictionaries for hunspell. 
 ;; 2014/08/30 York Zhao
 ;;     Add support to allow binding a lisp function to a "replace key" in
 ;;     `speck-replace-keys' and/or `speck-replace-map', so that one can define a
@@ -990,6 +993,12 @@ corresponding association to `speck-iso-639-1-alist'."
                 (string :format " %v" :size 20)))
   :group 'speck-hunspell)
 
+(defcustom speck-hunspell-extra-dictionaries nil
+  "Extra dictionaries passed to hunspell through the \"-d\"
+option."
+  :type '(repeat (string :tag "Argument" :format "%t: %v\n" :size 40))
+  :group 'speck-hunspell)
+
 (defun speck-hunspell-dictionary-names ()
   "Return list of Hunspell's dictionary names."
   (let (list)
@@ -1127,7 +1136,12 @@ customizing `speck-hunspell-language-options'."
            ;; Pipe option and `speck-hunspell-library-directory'
            ;; concatenated with `dictionary-name' - Hunspell wants it
            ;; this way.
-           (list "-a" "-d" (concat speck-hunspell-library-directory dictionary-name))
+           (list "-a" "-d" 
+                 (mapconcat #'identity 
+                            (cons (concat speck-hunspell-library-directory
+                                          dictionary-name)
+                                  speck-hunspell-extra-dictionaries)
+                            ","))
            ;; Minimum word length.
            (when minimum-word-length
              (list (concat "-W" (number-to-string minimum-word-length))))
