@@ -1865,6 +1865,12 @@ Preserves the `buffer-modified-p' state of the current buffer."
 ;;;                             Mode
 ;; _____________________________________________________________________________
 ;;
+(defsubst speck-put-property (from to)
+  (put-text-property from to 'specked t))
+
+(defsubst speck-remove-property (from to)
+  (remove-text-properties from to '(specked nil)))
+
 (defun speck-lighter ()
   "Speck lighter."
   (let (prop prop-insert)
@@ -3181,12 +3187,6 @@ and within a `save-excursion'."
     ;; Speck newline.
     (unless speck-stop
       (speck-put-property old (point)))))
-
-(defsubst speck-put-property (from to)
-  (put-text-property from to 'specked t))
-
-(defsubst speck-remove-property (from to)
-  (remove-text-properties from to '(specked nil)))
 
 ;; The following three items stolen from ps-print.el.
 (defalias 'speck-jitify 'jit-lock-fontify-now)
