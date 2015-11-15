@@ -33,6 +33,9 @@
 
 ;; Change Log:
 ;;
+;; 2015/11/15 York Zhao
+;;     Explicitly set the "Extra Arguments" in `speck-hunspell-language-options'
+;;     (the 5th element) to nil, to make it more convenient for customization.
 ;; 2015/11/13 York Zhao
 ;;     Add support for using extra dictionaries for hunspell. 
 ;; 2014/08/30 York Zhao
@@ -1035,12 +1038,12 @@ you have installed several dictionaries)."
   :group 'speck-hunspell)
 
 (defcustom speck-hunspell-language-options
-  '(("da" utf-8 nil t)
-    ("de" iso-8859-1 nil t)
-    ("en" iso-8859-1 nil nil)
-    ("fr" iso-8859-1 nil nil)
-    ("it" iso-8859-1 nil nil)
-    ("ru" koi8-r nil nil))
+  '(("da" utf-8 nil t nil)
+    ("de" iso-8859-1 nil t nil)
+    ("en" iso-8859-1 nil nil nil)
+    ("fr" iso-8859-1 nil nil nil)
+    ("it" iso-8859-1 nil nil nil)
+    ("ru" koi8-r nil nil nil))
   "Hunspell language options.
 Its value should be a list of five entries for each language.
 
@@ -1060,7 +1063,7 @@ Its value should be a list of five entries for each language.
 
 \(5) Extra Arguments passed to Hunspell.
 
-Specifying \"None\" \(nil) for \(2--4) means do not pass a value
+Specifying \"None\" \(nil) for \(2--5) means do not pass a value
 for this option to Hunspell."
   :type '(repeat
           (list :tag "" :format "%v"
