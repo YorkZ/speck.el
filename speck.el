@@ -4560,7 +4560,7 @@ insertion."
         (cond
          ((and (integerp entry) (< (point) entry))
           ;; POSITION
-          (incf entry amount))
+          (cl-incf entry amount))
          ((or (atom entry) (eq (car entry) t) (markerp (car entry)))
           ;; undo boundary: `nil'
           ;; change from "unmodified" status: (t HIGH . LOW)
@@ -4568,16 +4568,16 @@ insertion."
           nil)
          ((and (integerp (car entry)) (< (point) (car entry)))
           ;; insertion: (BEG . END)
-          (incf (car entry) amount)
-          (incf (cdr entry) amount))
+          (cl-incf (car entry) amount)
+          (cl-incf (cdr entry) amount))
          ((and (stringp (car entry)) (< (point) (cdr entry)))
           ;; deletion: (TEXT . POSITION)
-          (incf (cdr entry) (if (natnump (cdr entry)) amount (- amount))))
+          (cl-incf (cdr entry) (if (natnump (cdr entry)) amount (- amount))))
          ((and (null (car entry)) (< (point) (car (nthcdr 3 entry))))
           ;; text property modification: (nil PROPERTY VALUE BEG . END)
           (let ((cons (nthcdr 3 entry)))
-            (incf (car cons) amount)
-            (incf (cdr cons) amount))))))))
+            (cl-incf (car cons) amount)
+            (cl-incf (cdr cons) amount))))))))
 
 (defun speck-save-string (string)
   "Insert STRING with `specked' and `==' properties set."
