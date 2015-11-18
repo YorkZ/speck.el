@@ -33,6 +33,8 @@
 
 ;; Change Log:
 ;;
+;; 2015/11/17 York Zhao
+;;     Speck only visible text
 ;; 2015/11/15 York Zhao
 ;;     Explicitly set the "Extra Arguments" in `speck-hunspell-language-options'
 ;;     (the 5th element) to nil, to make it more convenient for customization.
@@ -2214,6 +2216,18 @@ entry from `speck-dictionary-names-alist'."
     (goto-char speck-marker)
     (set-marker speck-marker nil)))
 
+(cl-defun speck-forward-line (&optional (n 1))
+  "Move N logical lines (backward if N is negative) forward, but
+  skips invisible text. Point will be moved the beginning of next (previous
+  logical line."
+  ;; Goto end (beginning) of current logical line before moving line so that
+  ;; calling `vertical-line' will move to the next (previous) logical line
+  ;; instead of visual line.
+  (goto-char (if (> n 0)
+                 (line-end-position)
+               (line-beginning-position)))
+  (vertical-motion n))
+
 ;; _____________________________________________________________________________
 ;;
 ;;;                               overlays
@@ -2951,7 +2965,7 @@ and within a `save-excursion'."
     (when (and selected (not (speck-stop)))
       (if (bolp)
           ;; When at `bolp' speck last chunk on preceding line.
-          (forward-line -1)
+          (speck-forward-line -1)
         ;; Speck last chunk on present line.
         (when (or (eq speck-chunk-at-point t)
                   (and (eq speck-chunk-at-point 'commands)
@@ -2975,7 +2989,8 @@ and within a `save-excursion'."
             ;; `speck-chunks' would be more intuitive here but we would
             ;; have to set up things for that, hence stick to
             ;; `speck-line'.
-            (speck-line))))
+            (speck-line)
+            (speck-forward-line))))
       (when (and speck-nospeck-buffer
                  (or speck-stop
                      (and (or (= speck-nospeck-at window-start)
@@ -2994,7 +3009,8 @@ and within a `save-excursion'."
         (narrow-to-region window-start window-end)
         (goto-char (point-min))
         (while (and (not (speck-stop)) (not (eobp)))
-          (speck-line))))
+          (speck-line)
+          (speck-forward-line))))
     (unless (or speck-stop speck-break)
       (if (eq (current-buffer) speck-nospeck-buffer)
           (progn
@@ -3182,11 +3198,8 @@ and within a `save-excursion'."
              ;; Speck entire line.
              (t (speck-chunks)))
             (goto-char (point-max))))))
-    (setq old (point))
-    (forward-line)
-    ;; Speck newline.
     (unless speck-stop
-      (speck-put-property old (point)))))
+      (speck-put-property (point) (min (point-max) (1+ (line-end-position)))))))
 
 ;; The following three items stolen from ps-print.el.
 (defalias 'speck-jitify 'jit-lock-fontify-now)
