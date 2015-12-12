@@ -1003,6 +1003,7 @@ corresponding association to `speck-iso-639-1-alist'."
 option."
   :type '(repeat (string :tag "Argument" :format "%t: %v\n" :size 40))
   :group 'speck-hunspell)
+(make-variable-buffer-local 'speck-hunspell-extra-dictionaries)
 
 (defun speck-hunspell-dictionary-names ()
   "Return list of Hunspell's dictionary names."
